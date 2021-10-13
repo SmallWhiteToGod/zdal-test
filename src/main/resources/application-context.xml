@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+    <!--  -->
+    <context:annotation-config />
+    <context:component-scan base-package="com.alipay.zdal.demo.biz"/>
+
+    <!-- 分库分表数据源-->
+    <bean id="dataSource" class="com.alipay.zdal.client.jdbc.ZdalDataSource" init-method="init">
+        <property name="appName" value="zdal"/>
+        <property name="appDsName" value="ShardDataSource"/>
+        <property name="dbmode" value="dev"/>
+        <property name="configPath" value="D:\code\myspace\zdal_test\src\main\resources\config"/>
+        <!--<property name="configPath" value="classpath*:mapper/*.xml"/>-->
+    </bean>
+    <!-- mybatis相关配置，绑定数据源 -->
+    <mybatis:scan base-package="com.alipay.zdal.demo.mapper"/>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.alipay.zdal.demo.model"/>
+        <property name="mapperLocations" value="classpath*:mapper/*.xml"/>
+    </bean>
+</beans>
